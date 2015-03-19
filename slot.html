@@ -1,0 +1,217 @@
+<html>
+<head>
+	<title>Slot Machine Page</title>
+	<style type="text/css">
+		div
+		{
+			color:white;
+			font-size:20px;			
+		}
+		i
+		{
+			color:blue;
+			font-size:25px;
+		}
+	</style>	
+</head>
+
+<body bgcolor="#8AB8E6">
+
+	<form name="slots" onsubmit="pulllever(); return false;">
+	<center>
+	<h2>Slot Machine:</h2>
+	<table border="0">
+		<tr>
+			<th align="right">Total Money: </th>	
+			<td align="left"><input type="text" size="10" name="money" READONLY value="50"></td>
+			<td rowspan="6">
+				<center><h3>Scoring Chart:</h2></center>
+				<table border="0" bgcolor="white" align="center">					
+					<tr>
+						<th style="color:red">Various Types:</th>
+						<th style="color:red">Result:</th>
+					</tr>
+					<tr>
+						<td align="center"> <img src="images/slot/1.jpg" width="45" height="40"><br/><img src="images/slot/1.jpg" width="45" height="40"><br/><img src="images/slot/1.jpg" width="45" height="40"> </td>
+						<th>  <i>JACKPOT:</i><br/> (20x your bet) </th>
+					</tr>
+					<tr>
+						<td align="center"> <img src="images/slot/2.jpg" width="45" height="40"><br/><img src="images/slot/6.jpg" width="45" height="40"><br/><img src="images/slot/2.jpg" width="45" height="40"> </td>
+						<th align="left"> 5x your bet </th>
+					</tr>
+					<tr>
+						<td align="center"> <img src="images/slot/7.jpg" width="45" height="40"><br/><img src="images/slot/8.jpg" width="45" height="40"><br/><img src="images/slot/9.jpg" width="45" height="40"> </td>
+						<th align="left"> Sorry you lose </th>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<th align="right">Money Made: </th>	
+			<td align="left"><input type="text" size="10" name="total" READONLY ></td>
+		</tr>
+		<tr>
+			<th align="right"> Your bet: </th>
+			<td align="left"><input type="text" size="10" name="bet"></td>
+		</tr>
+		<tr>
+			<th align="right"> <input type="button" value="QUIT" onclick="stopplay();" id="quit"> </th>
+			<th align="left"> <input type="submit" value="PULL LEVER" id="submit"> </th>
+		</tr>
+		<tr>
+			<td colspan="2"><hr width="95%"></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+			
+				<table cellspacing="5" cellpadding="2" border="10" bgcolor="white">
+					<tr>
+						<td><img src="images/slot/1.jpg"  width="150" height="110" name="slot1"></td>
+						<td><img src="images/slot/2.jpg" width="150" height="110" name="slot2"></td>
+						<td><img src="images/slot/3.jpg" width="150" height="110" name="slot3"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3"><hr></td>
+		</tr>
+		<tr>
+			<td colspan="3" align="center">
+				 <div id="outputmsg"></div>
+			</td>
+		</tr>		
+	</table>
+	</center>
+	</form>
+	
+	<script>
+
+		document.slots.bet.focus();
+		startmoney=50;
+		document.slots.money.value=startmoney;
+
+		function stopplay () {
+
+			if (document.slots.money.value < startmoney) 
+			{
+				alert("You lost "+ (startmoney-document.slots.money.value) +" bucks.\n\nThanks for playing.");
+			}
+			else
+			{
+						alert("You gained "+ (document.slots.money.value-startmoney) +" bucks.\n\nThanks for playing.");
+			}
+			document.slots.reset();
+		}
+
+		function pulllever ()
+		{
+			document.getElementById("outputmsg").innerHTML="";
+			if (document.slots.bet.value<1 || document.slots.bet.value == "") 
+			{
+				alert("You cannot bet less that 1.   "); 
+				return;
+			}
+			if (Math.floor(document.slots.money.value) < Math.floor(document.slots.bet.value)) 
+			{
+				alert("Your bet "+document.slots.bet.value+" is larger than your remaining money "+document.slots.money.value+".  "); 
+				return;
+			}
+			document.getElementById("submit").disabled=true;
+			document.getElementById("quit").disabled=true;
+			chk=0;
+			slot=1;
+			rotate();
+		}
+		
+		function rotate()
+		{
+			if(slot==1)
+			{
+				t1=10+Math.floor((Math.random() * 10))
+				for(i=0;i<t1;i++)
+				{
+					document.slots.slot1.src="images/slot/"+(i % 10)+".jpg";
+				}
+			}
+			
+			if(slot==1 ||slot==2)
+			{
+				t2=10+Math.floor((Math.random() * 10))
+				for(i=0;i<t2;i++)
+				{
+					document.slots.slot2.src="images/slot/"+(i % 10)+".jpg";
+				}
+			}
+			
+			t3=10+Math.floor((Math.random() * 10))
+			for(k=0;k<t3;k++)
+			{
+				document.slots.slot3.src="images/slot/"+(k % 10)+".jpg";
+			}
+			chk++;
+
+			switch(slot)
+			{
+				case 1: if(chk<(slot*30))
+							setTimeout("rotate();",50);
+						else
+						{
+							chk=0;
+							slot=2;
+							rotate();
+						}
+						break;
+						
+				case 2:	if(chk<(slot*30))
+							setTimeout("rotate();",50);
+						else
+						{
+							chk=0;
+							slot=3;
+							rotate();
+						}
+						break;
+						
+				case 3: if(chk<(slot*30))
+							setTimeout("rotate();",50);
+						else
+						{
+							chk=0;
+							slot=4;
+							rotate();
+						}
+						break;
+						
+				default: checkmatch();
+						 break;
+			}
+		}
+				
+		function checkmatch()	
+		{ 
+
+			if ((document.slots.slot1.src == document.slots.slot2.src) && (document.slots.slot1.src == document.slots.slot3.src)) 
+			{
+				document.getElementById("outputmsg").innerHTML="JACKPOT - You won "+Math.floor(document.slots.bet.value*20)+" bucks";
+				document.slots.money.value=Math.floor(document.slots.money.value)+ Math.floor(document.slots.bet.value*20);
+			}
+			else if ((document.slots.slot1.src == document.slots.slot2.src) ||(document.slots.slot1.src == document.slots.slot3.src) || (document.slots.slot2.src == document.slots.slot3.src))
+			{
+				document.getElementById("outputmsg").innerHTML="A pair - You won "+Math.floor(document.slots.bet.value*5)+" bucks";
+				document.slots.money.value = Math.floor(document.slots.money.value) + Math.floor(document.slots.bet.value*5) ;
+			}
+			else 
+			{
+				document.getElementById("outputmsg").innerHTML="No match - You lost "+Math.floor(document.slots.bet.value*2)+" bucks";
+				document.slots.money.value=Math.floor(document.slots.money.value)-Math.floor(document.slots.bet.value*2); 
+			}
+			document.slots.total.value=document.slots.money.value-startmoney;
+			document.getElementById("submit").disabled=false;
+			document.getElementById("quit").disabled=false;
+		}
+
+	</script>
+</body>
+</html>
